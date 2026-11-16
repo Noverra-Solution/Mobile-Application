@@ -21,6 +21,14 @@ import ApartmentsAssetModule from './src/components/ApartmentsAssetModule';
 import CasesModule from './src/components/CasesModule';
 import ScanModule from './src/components/ScanModule';
 import MoreModule from './src/components/MoreModule';
+import AssistantScreen from './src/assistant/components/AssistantScreen';
+import TechnicianModule from './src/components/TechnicianModule';
+import PropertyOwnerModule from './src/components/PropertyOwnerModule';
+import UserTenantModule from './src/components/UserTenantModule';
+import FacilitySupervisorModule from './src/components/FacilitySupervisorModule';
+import AdminModule from './src/components/AdminModule';
+import ServiceProviderModule from './src/components/ServiceProviderModule';
+import { assistantRepository } from './src/assistant/storage/AssistantRepository';
 import {
   INITIAL_APARTMENTS,
   INITIAL_CASES,
@@ -46,10 +54,13 @@ const USERS = [
   { email: 'anto@gmail.com', name: 'Anto', initials: 'AN', role: 'Real Estate Asset Owner', color: '#D8E9F7' },
   { email: 'rufin@gmail.com', name: 'Rufin', initials: 'RU', role: 'Portfolio Manager', color: '#E9E0F8' },
   { email: 'victer@gmail.com', name: 'Victer', initials: 'VI', role: 'Facility Supervisor', color: '#F9E5CE' },
+  { email: 'ramesh@gmail.com', name: 'Ramesh Kumar', initials: 'RK', role: 'Technician', color: '#DCFCE7' },
+  { email: 'anand@gmail.com', name: 'Anand Varma', initials: 'AV', role: 'Tenant / Resident', color: '#FEF08A' },
+  { email: 'contractor@noverra.com', name: 'CoolAir Solutions', initials: 'CS', role: 'Service Provider', color: '#CFFAFE' },
 ] as const;
 
 type User = typeof USERS[number];
-type Tab = 'home' | 'cases' | 'scan' | 'assets' | 'more';
+type Tab = 'home' | 'cases' | 'scan' | 'assets' | 'assistant' | 'more';
 
 export default function App() {
   const [showHero, setShowHero] = useState(true);
@@ -86,7 +97,10 @@ export default function App() {
     setScreen('welcome');
   }
 
-  function handleLogout() {
+  async function handleLogout() {
+    if (currentUser?.email) {
+      await assistantRepository.clearUserDataOnLogout(currentUser.email);
+    }
     setCurrentUser(null);
     setLoginInput('');
     setScreen('login');
@@ -228,9 +242,83 @@ export default function App() {
       )}
 
       {/* ======================================================== */}
-      {/* 3. MAIN APP INTERFACE WITH 5 BOTTOM TABS                 */}
+      {/* 3. MAIN APP INTERFACE (Role-Based Interface Routing)     */}
       {/* ======================================================== */}
-      {screen === 'main' && (
+      {screen === 'main' && currentUser?.role === 'Technician' ? (
+        <TechnicianModule
+          currentUser={{
+            name: currentUser.name,
+            email: currentUser.email,
+            initials: currentUser.initials,
+            role: currentUser.role,
+            color: currentUser.color,
+          }}
+          onLogout={handleLogout}
+          apartments={apartments}
+        />
+      ) : screen === 'main' && currentUser?.role === 'Real Estate Asset Owner' ? (
+        <PropertyOwnerModule
+          currentUser={{
+            name: currentUser.name,
+            email: currentUser.email,
+            initials: currentUser.initials,
+            role: currentUser.role,
+            color: currentUser.color,
+          }}
+          onLogout={handleLogout}
+          apartments={apartments}
+          onUpdateApartments={setApartments}
+          onOpenAssistant={() => setActiveTab('assistant')}
+        />
+      ) : screen === 'main' && currentUser?.role === 'Tenant / Resident' ? (
+        <UserTenantModule
+          currentUser={{
+            name: currentUser.name,
+            email: currentUser.email,
+            initials: currentUser.initials,
+            role: currentUser.role,
+            color: currentUser.color,
+          }}
+          onLogout={handleLogout}
+          onOpenAssistant={() => setActiveTab('assistant')}
+        />
+      ) : screen === 'main' && currentUser?.role === 'Facility Supervisor' ? (
+        <FacilitySupervisorModule
+          currentUser={{
+            name: currentUser.name,
+            email: currentUser.email,
+            initials: currentUser.initials,
+            role: currentUser.role,
+            color: currentUser.color,
+          }}
+          onLogout={handleLogout}
+          onOpenAssistant={() => setActiveTab('assistant')}
+        />
+      ) : screen === 'main' && currentUser?.role === 'Service Provider' ? (
+        <ServiceProviderModule
+          currentUser={{
+            name: currentUser.name,
+            email: currentUser.email,
+            initials: currentUser.initials,
+            role: currentUser.role,
+            color: currentUser.color,
+          }}
+          onLogout={handleLogout}
+          onOpenAssistant={() => setActiveTab('assistant')}
+        />
+      ) : screen === 'main' && currentUser?.role === 'Portfolio Manager' ? (
+        <AdminModule
+          currentUser={{
+            name: currentUser.name,
+            email: currentUser.email,
+            initials: currentUser.initials,
+            role: currentUser.role,
+            color: currentUser.color,
+          }}
+          onLogout={handleLogout}
+          onOpenAssistant={() => setActiveTab('assistant')}
+        />
+      ) : screen === 'main' ? (
         <View style={{ flex: 1, backgroundColor: '#F8FAF9' }}>
           {/* TAB 1: HOME (Matching Image 1 & 5) */}
           {activeTab === 'home' && (
@@ -245,6 +333,14 @@ export default function App() {
                 </View>
 
                 <View style={styles.headerActionIcons}>
+                  <Pressable
+                    onPress={() => setActiveTab('assistant')}
+                    style={styles.headerAssistantPill}
+                  >
+                    <Text style={{ fontSize: 13 }}>🤖</Text>
+                    <Text style={styles.headerAssistantText}>Assistant</Text>
+                  </Pressable>
+
                   <View style={styles.bellIconWrap}>
                     <Text style={{ fontSize: 18 }}>🔔</Text>
                     <View style={styles.bellRedDot} />
@@ -441,7 +537,20 @@ export default function App() {
             />
           )}
 
-          {/* TAB 5: MORE (Matching Image 2 & 3) */}
+          {/* TAB 5: NOVERRA ASSISTANT (Offline Company Knowledge Chatbot) */}
+          {activeTab === 'assistant' && (
+            <AssistantScreen
+              currentUser={{
+                name: currentUser?.name || 'Anto',
+                email: currentUser?.email || 'anto@gmail.com',
+                role: currentUser?.role || 'Real Estate Asset Owner',
+                initials: currentUser?.initials || 'A',
+              }}
+              onBack={() => setActiveTab('home')}
+            />
+          )}
+
+          {/* TAB 6: MORE (Matching Image 2 & 3) */}
           {activeTab === 'more' && (
             <MoreModule
               currentUser={{
@@ -453,6 +562,7 @@ export default function App() {
               }}
               onLogout={handleLogout}
               onRaiseCase={() => setActiveTab('cases')}
+              onOpenAssistant={() => setActiveTab('assistant')}
             />
           )}
 
@@ -499,7 +609,16 @@ export default function App() {
               <Text style={[styles.tabLabel, activeTab === 'assets' && styles.tabLabelActive]}>Assets</Text>
             </Pressable>
 
-            {/* 5. More */}
+            {/* 5. Assistant */}
+            <Pressable
+              onPress={() => setActiveTab('assistant')}
+              style={styles.tabButton}
+            >
+              <Text style={[styles.tabIcon, activeTab === 'assistant' && styles.tabIconActive]}>🤖</Text>
+              <Text style={[styles.tabLabel, activeTab === 'assistant' && styles.tabLabelActive]}>Assistant</Text>
+            </Pressable>
+
+            {/* 6. More */}
             <Pressable
               onPress={() => setActiveTab('more')}
               style={styles.tabButton}
@@ -509,7 +628,7 @@ export default function App() {
             </Pressable>
           </View>
         </View>
-      )}
+      ) : null}
     </SafeAreaView>
   );
 }
@@ -567,7 +686,9 @@ const styles = StyleSheet.create({
   homeBrandGroup: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   headerEmblemWrap: { width: 30, height: 30, borderRadius: 8, backgroundColor: '#070A0F', padding: 2, justifyContent: 'center', alignItems: 'center' },
   headerBrandTitle: { fontSize: 22, fontWeight: '900', color: '#0284C7', letterSpacing: -0.8 },
-  headerActionIcons: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  headerActionIcons: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  headerAssistantPill: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#F0FDFA', borderWidth: 1, borderColor: '#CCFBF1', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 14 },
+  headerAssistantText: { fontSize: 11, fontWeight: '800', color: '#0F766E' },
   bellIconWrap: { position: 'relative' },
   bellRedDot: { position: 'absolute', top: 0, right: 0, width: 7, height: 7, borderRadius: 4, backgroundColor: '#DC2626' },
   smallAvatar: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },

@@ -14,13 +14,23 @@
     },
     "icon": "./assets/nexus-emblem.png",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "no",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
-      "package": "com.novera.facilities",
+      "package": "com.novera.facilities"
     },
     "plugins": [
-      "expo-status-bar"
-    ]
+      "expo-status-bar",
+      "expo-sqlite"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "b475a076-3111-4d03-9381-aefb001114e5"
+      }
+    }
   }
 }

@@ -81,3 +81,66 @@ export interface WorkOrder {
   assignedTo: string;
   dueDate: string;
 }
+
+export interface ChecklistItem {
+  id: string;
+  label: string;
+  done: boolean;
+}
+
+export interface MaterialConsumption {
+  id: string;
+  name: string;
+  quantity: number;
+  unitCost: number;
+}
+
+export interface TechnicianJob {
+  id: string; // e.g. "WO-2026-0103" or "IC260031"
+  title: string;
+  description: string;
+  type: 'Reactive' | 'Corrective' | 'Predictive';
+  priority: RequestPriority;
+  status: 'Assigned' | 'In Progress' | 'On Hold' | 'Pending Verification' | 'Completed';
+  category: RequestCategory;
+  location: string;
+  building: string;
+  floor: string;
+  room: string;
+  assetId?: string;
+  assetName: string;
+  assignedTechnician: string;
+  dueDate: string;
+  slaHours: number;
+  checklist: ChecklistItem[];
+  beforePhotos: string[];
+  afterPhotos: string[];
+  workNotes: string;
+  materialsUsed: MaterialConsumption[];
+  timeSpentMinutes: number;
+  isClockRunning?: boolean;
+  reworkNote?: string;
+  supervisorVerifier?: string;
+}
+
+export interface SparePartRequest {
+  id: string;
+  partName: string;
+  quantity: number;
+  reason: string;
+  workOrderId: string;
+  requestedBy: string;
+  status: 'Pending Approval' | 'Approved' | 'Issued';
+  createdAt: string;
+}
+
+export interface SafetyHazardReport {
+  id: string;
+  location: string;
+  hazardType: 'Electrical' | 'Gas Leak' | 'Structural' | 'Flooding' | 'Chemical' | 'Other';
+  description: string;
+  severity: 'Critical' | 'High' | 'Medium';
+  reportedBy: string;
+  createdAt: string;
+  status: 'Escalated to Supervisor' | 'Under Investigation' | 'Resolved';
+}

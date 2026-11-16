@@ -1,4 +1,4 @@
-# Noverra Mobile · Real Estate Owner Asset Lifetime Cost & CAFM Platform
+i am not able to# Noverra Mobile · Real Estate Owner Asset Lifetime Cost & CAFM Platform
 
 **Noverra** is a mobile platform engineered for **Real Estate Asset Owners and Property Investors** to track the **Lifetime Cost & Expense Ratio** of their property portfolios.
 
@@ -19,7 +19,10 @@
              ├── ❄️ Living Room AC (Daikin 1.5T Inverter) · Capex: ₹44k · Repairs: ₹14.2k
              ├── ❄️ Master Bed AC (Carrier 1.0T) · Capex: ₹32k · Repairs: ₹3.1k
              ├── 🚰 Bathroom Geyser (AO Smith 25L) · Capex: ₹14.5k · Repairs: ₹850
-             ├── 🧺 Refrigerator (Samsung 345L) · Capex: ₹41k · Repairs: ₹4.2k
+             ├── [UserFeatures.docx](../../UserFeatures.docx)
+[AdminFeatures.docx](../../AdminFeatures.docx)
+[Serivce Provider.docx](../../Serivce%20Provider.docx)
+[FacilitySupervisor.docx](../../FacilitySupervisor.docx)🧺 Refrigerator (Samsung 345L) · Capex: ₹41k · Repairs: ₹4.2k
              └── ⚡ Smart Distribution Panel (Schneider Easy9) · Capex: ₹18k · Repairs: ₹0
 ```
 

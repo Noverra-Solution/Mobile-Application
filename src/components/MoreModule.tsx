@@ -20,12 +20,14 @@ interface Props {
   currentUser: { name: string; email: string; initials: string; role: string; color: string };
   onLogout: () => void;
   onRaiseCase: () => void;
+  onOpenAssistant?: () => void;
 }
 
 export default function MoreModule({
   currentUser,
   onLogout,
   onRaiseCase,
+  onOpenAssistant,
 }: Props) {
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [twoFactor, setTwoFactor] = useState(false);
@@ -82,6 +84,24 @@ export default function MoreModule({
 
         {/* Menu Items List matching Image 2 & 3 */}
         <View style={styles.menuStack}>
+          {/* Noverra Assistant */}
+          {onOpenAssistant && (
+            <Pressable
+              onPress={onOpenAssistant}
+              style={({ pressed }) => [styles.menuItem, styles.assistantItem, pressed && styles.menuItemPressed]}
+            >
+              <Text style={styles.menuIcon}>🤖</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.menuTitle, { color: '#0F766E', fontWeight: '900' }]}>Noverra Assistant</Text>
+                <Text style={{ fontSize: 10, color: '#64748B' }}>Offline Company Knowledge Chatbot</Text>
+              </View>
+              <View style={styles.offlineBadge}>
+                <Text style={styles.offlineBadgeText}>OFFLINE</Text>
+              </View>
+              <Text style={styles.menuChevron}>›</Text>
+            </Pressable>
+          )}
+
           {/* Work Orders */}
           <Pressable
             onPress={() => setActiveModal('workOrders')}
@@ -375,6 +395,9 @@ const styles = StyleSheet.create({
     borderBottomColor: '#F1F5F9',
   },
   menuItemPressed: { backgroundColor: '#F8FAFC' },
+  assistantItem: { backgroundColor: '#F0FDFA' },
+  offlineBadge: { backgroundColor: '#CCFBF1', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6, marginRight: 6 },
+  offlineBadgeText: { fontSize: 8.5, fontWeight: '800', color: '#0F766E', letterSpacing: 0.5 },
   menuIcon: { fontSize: 16, marginRight: 14 },
   menuTitle: { flex: 1, fontSize: 14, fontWeight: '700', color: '#0F172A' },
   menuChevron: { fontSize: 18, color: '#CBD5E1' },
