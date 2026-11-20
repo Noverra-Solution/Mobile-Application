@@ -20,7 +20,7 @@ The entire folder is deployable to Netlify, Vercel (static), GitHub Pages, or an
 
 - Original-inspired orange connected-dot SVG mark and center-out opening animation.
 - Animated hero, operational dashboard illustration, connected-capabilities ribbon.
-- About, five platform pillars, interactive workflow, industries, web/mobile visual concepts, differentiators and enquiry form.
+- About, five platform pillars, interactive workflow, industries, web/mobile visual concepts, three software packages (Essential, Standard, Enterprise), differentiators and enquiry form.
 - Responsive mobile navigation and scroll-triggered reveals.
 - Reduced-motion accessibility and semantic sections.
 

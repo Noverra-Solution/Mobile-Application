@@ -21,6 +21,14 @@
   const steps=[...document.querySelectorAll('.workflow-step')],progress=[...document.querySelectorAll('#workflow-progress span')];
   const setStep=(index)=>{const d=workflowData[index];steps.forEach((b,i)=>{b.classList.toggle('selected',i===index);b.setAttribute('aria-selected',String(i===index))});document.getElementById('workflow-icon').textContent=d.icon;document.getElementById('workflow-number').textContent=String(index+1).padStart(2,'0')+' / 05';document.getElementById('workflow-title').textContent=d.title;document.getElementById('workflow-description').textContent=d.description;progress.forEach((p,i)=>p.classList.toggle('on',i<=index));const ring=document.querySelector('.workflow-ring');ring.classList.remove('pulse');void ring.offsetWidth;ring.classList.add('pulse');setTimeout(()=>ring.classList.remove('pulse'),380)};
   steps.forEach((button,index)=>button.addEventListener('click',()=>setStep(index)));
+  document.querySelectorAll('.package-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const pkg=btn.getAttribute('data-package');
+      const interestSelect=document.querySelector('#inquiry-form select[name="interest"]');
+      if(interestSelect&&pkg){interestSelect.value=pkg}
+      document.getElementById('contact')?.scrollIntoView({behavior:'smooth'});
+    });
+  });
   const form=document.getElementById('inquiry-form'),result=document.getElementById('form-result');
   form?.addEventListener('submit',async(event)=>{
     event.preventDefault();if(!form.reportValidity())return;
